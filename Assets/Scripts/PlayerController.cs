@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
     public enum PlayerColor
@@ -23,6 +24,10 @@ public class PlayerController : MonoBehaviour {
     public float bubbleDelay = 2f;
     public float forcePower = 10f;
     public float surfaceY = 0f;
+    public bool canTakeDamage = false;
+    public float damageDelay = 0.5f;
+    public Image[] hearts;
+    public int health = 3;
 	// Use this for initialization
 	void Start () {
         rig = this.GetComponent<Rigidbody2D>();
@@ -41,7 +46,15 @@ public class PlayerController : MonoBehaviour {
             BlowBubble = "RBubble";
         }
 	}
-	
+    public void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.tag.Equals("Enemy"))
+        {
+            Debug.Log("Enemy hit");
+            TakeDamage();
+        }
+    }
+
     public void EnterBubble(Bubble bub)
     {
         inBubble = true;
@@ -53,11 +66,35 @@ public class PlayerController : MonoBehaviour {
 
     public void ExitBubble(Bubble bub)
     {
+        canTakeDamage = false;
         inBubble = false;
         rig.velocity = Vector3.zero;
         this.GetComponent<Collider2D>().isTrigger = false;
         rig.gravityScale = 1f;
         transform.SetParent(null);
+    }
+
+    IEnumerator allowDamage()
+    {
+        float timer = 0f;
+        while(timer < damageDelay)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        canTakeDamage = true;
+    }
+
+    public void TakeDamage()
+    {
+        hearts[health-1].color = Color.black;
+        health--;
+        canTakeDamage = false;
+        if(health == 0)
+        {
+            alive = false;
+        }
+       StartCoroutine(allowDamage());
     }
 
 	// Update is called once per frame

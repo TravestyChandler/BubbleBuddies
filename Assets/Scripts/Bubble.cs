@@ -9,6 +9,8 @@ public class Bubble : MonoBehaviour {
     public bool floating = false;
     public float floatTime = 3f;
     public float floatHeight = 6f;
+    public GameObject bubbleParticles;
+    public bool popped = false;
 	// Use this for initialization
 	void Start () {
 	
@@ -17,8 +19,9 @@ public class Bubble : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         liveTimer += Time.deltaTime;
-        if(liveTimer >= maxLife && !floating)
+        if(liveTimer >= maxLife && !floating &&!popped)
         {
+            popped = true;
             PopBubble();
         }
 	}
@@ -82,6 +85,10 @@ public class Bubble : MonoBehaviour {
 
     public void PopBubble()
     {
-        Destroy(this.gameObject);
+        Vector3 pos = new Vector3(transform.position.x, transform.position.y, 0);
+        GameObject parts = GameObject.Instantiate(bubbleParticles, pos, Quaternion.identity);
+        this.GetComponent<SpriteRenderer>().enabled = false;
+        Destroy(parts, 0.5f);
+        Destroy(this.gameObject, 1f);
     }
 }
