@@ -5,6 +5,7 @@ public class ElevatorButton : MonoBehaviour {
     public Elevator connectedElevator;
     int playerOnCount = 0;
     bool platformStay = false;
+    public Sprite up, down;
 	// Use this for initialization
 	void Start () {
         connectedElevator.enabled = false;
@@ -24,6 +25,7 @@ public class ElevatorButton : MonoBehaviour {
             if (playerOnCount > 0)
             {
                 connectedElevator.enabled = true;
+                this.GetComponent<SpriteRenderer>().sprite = down;
                 connectedElevator.MoveUp();
             }
         }
@@ -47,6 +49,7 @@ public class ElevatorButton : MonoBehaviour {
                 if (!platformStay)
                 {
                     connectedElevator.enabled = false;
+                    this.GetComponent<SpriteRenderer>().sprite = up;
                     connectedElevator.MoveDown();
                 }
             }

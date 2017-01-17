@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour {
     public float damageDelay = 0.5f;
     public Image[] hearts;
     public int health = 3;
+    public AudioSource source;
+    public AudioClip hit;
 	// Use this for initialization
 	void Start () {
         rig = this.GetComponent<Rigidbody2D>();
@@ -50,8 +52,11 @@ public class PlayerController : MonoBehaviour {
     {
         if (col.tag.Equals("Enemy"))
         {
-            Debug.Log("Enemy hit");
-            TakeDamage();
+            if (canTakeDamage) {
+                Debug.Log("Enemy hit");
+                col.SendMessage("PlayHitSound");
+                TakeDamage();
+            }
         }
     }
 
@@ -67,6 +72,7 @@ public class PlayerController : MonoBehaviour {
     public void ExitBubble(Bubble bub)
     {
         canTakeDamage = false;
+       StartCoroutine( allowDamage());
         inBubble = false;
         rig.velocity = Vector3.zero;
         this.GetComponent<Collider2D>().isTrigger = false;
@@ -88,6 +94,7 @@ public class PlayerController : MonoBehaviour {
     public void TakeDamage()
     {
         hearts[health-1].color = Color.black;
+        source.PlayOneShot(hit);
         health--;
         canTakeDamage = false;
         if(health == 0)
@@ -106,6 +113,7 @@ public class PlayerController : MonoBehaviour {
             {
                 rig.AddForce(-moveDirection * forcePower);
                 rig.velocity = new Vector2(Mathf.Clamp(rig.velocity.x, -moveDirection.x, moveDirection.x), rig.velocity.y);
+                //rig.velocity = -moveDirection;
                 Vector3 vect = transform.localScale;
                 vect.x = startXScale;
                 transform.localScale = vect;
@@ -114,6 +122,7 @@ public class PlayerController : MonoBehaviour {
             {
                 rig.AddForce(moveDirection * forcePower);
                 rig.velocity = new Vector2(Mathf.Clamp(rig.velocity.x, -moveDirection.x, moveDirection.x), rig.velocity.y);
+                //rig.velocity = moveDirection;
                 Vector3 vect = transform.localScale;
                 vect.x = -startXScale;
                 transform.localScale = vect;

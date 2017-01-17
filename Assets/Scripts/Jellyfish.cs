@@ -9,6 +9,8 @@ public class Jellyfish : MonoBehaviour {
     public float delayTime = 2f;
     public float moveForce = 100f;
     public float maxVelocity = 1f;
+    public AudioSource source;
+    public AudioClip hit;
 	// Use this for initialization
 	void Start () {
         startPos = transform.position;
@@ -21,7 +23,9 @@ public class Jellyfish : MonoBehaviour {
 	void Update () {
 	
 	}
-
+    public void PlayHitSound() {
+        source.PlayOneShot(hit);
+    }
     IEnumerator MoveRoutine()
     {
         int moveDirection = 1;

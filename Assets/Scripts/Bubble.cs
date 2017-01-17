@@ -4,6 +4,7 @@ using System.Collections;
 public class Bubble : MonoBehaviour {
     public PlayerController.PlayerColor bubbleColor = PlayerController.PlayerColor.Invalid;
     public PlayerController attachedPlayer;
+    public GameObject highlight;
     float liveTimer = 0f;
     public float maxLife = 3f;
     public bool floating = false;
@@ -11,6 +12,8 @@ public class Bubble : MonoBehaviour {
     public float floatHeight = 6f;
     public GameObject bubbleParticles;
     public bool popped = false;
+    public AudioClip pop;
+    public AudioSource source;
 	// Use this for initialization
 	void Start () {
 	
@@ -85,9 +88,12 @@ public class Bubble : MonoBehaviour {
 
     public void PopBubble()
     {
+        StopAllCoroutines();
         Vector3 pos = new Vector3(transform.position.x, transform.position.y, 0);
         GameObject parts = GameObject.Instantiate(bubbleParticles, pos, Quaternion.identity);
         this.GetComponent<SpriteRenderer>().enabled = false;
+        source.PlayOneShot(pop);
+        Destroy(highlight);
         Destroy(parts, 0.5f);
         Destroy(this.gameObject, 1f);
     }

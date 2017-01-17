@@ -54,6 +54,9 @@ public class GameManager : MonoBehaviour {
                 {
                     UIController.Instance.RunGameWin();
                 }
+                else if(stat == GameStatus.DeathFailure || stat == GameStatus.TimeFailure) {
+                    UIController.Instance.RunGameLoss();
+                }
             }
         }
        
